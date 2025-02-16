@@ -1,9 +1,9 @@
-package nazario.backslot.client;
+package nazario.nicos_backslots.client;
 
 import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
-import nazario.backslot.data.BackslotData;
-import nazario.backslot.data.BackslotDataLoader;
+import nazario.nicos_backslots.data.BackslotData;
+import nazario.nicos_backslots.data.BackslotDataLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;

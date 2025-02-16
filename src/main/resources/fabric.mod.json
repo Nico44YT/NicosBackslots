@@ -1,20 +1,25 @@
 {
   "schemaVersion": 1,
-  "id": "backslot",
+  "id": "nicos_backslots",
   "version": "${version}",
-  "name": "Nicos BackSlot",
-  "description": "",
-  "authors": [],
-  "contact": {},
+  "name": "Nicos Backslots",
+  "description": "A simple Backslot mod",
+  "authors": [
+    "Nico_44"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/project/nicos-backslots",
+    "issues": "https://github.com/Nico44YT/NicosBackslots/issues"
+  },
   "license": "GPL-3.0",
-  "icon": "assets/backslot/backslot_icon.png",
+  "icon": "assets/nicos_backslots/backslot_icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
-      "nazario.backslot.BackSlotClient"
+      "nazario.nicos_backslots.BackSlotClient"
     ],
     "main": [
-      "nazario.backslot.BackSlotMain"
+      "nazario.nicos_backslots.BackSlotMain"
     ]
   },
   "mixins": [
@@ -22,7 +27,15 @@
   ],
   "depends": {
     "fabric": "*",
-    "trinkets": ">${trinkets_version}",
+    "liby": ">=1.19.2-build-2.0",
+    "trinkets": ">=${trinkets_version}",
     "minecraft": "${minecraft_version}"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.source": "https://github.com/Nico44YT/NicosBackslots"
+      }
+    }
   }
 }

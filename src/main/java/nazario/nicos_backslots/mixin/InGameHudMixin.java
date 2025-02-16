@@ -1,4 +1,4 @@
-package nazario.backslot.mixin;
+package nazario.nicos_backslots.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.trinkets.api.TrinketComponent;

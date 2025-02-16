@@ -1,4 +1,4 @@
-package nazario.backslot.data;
+package nazario.nicos_backslots.data;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

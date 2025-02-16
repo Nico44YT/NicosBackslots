@@ -1,7 +1,7 @@
-package nazario.backslot;
+package nazario.nicos_backslots;
 
-import nazario.backslot.data.BackslotDataLoader;
-import nazario.backslot.networking.BackSlotPackets;
+import nazario.nicos_backslots.data.BackslotDataLoader;
+import nazario.nicos_backslots.networking.BackSlotPackets;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -16,7 +16,7 @@ import org.lwjgl.glfw.GLFW;
 public class BackSlotClient implements ClientModInitializer {
 
     public static KeyBinding SWITCH_BACKSLOT = new KeyBinding(
-            "key.backslot.swap",
+            "key.nicos_backslots.swap",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_G,
             "key.categories.inventory"

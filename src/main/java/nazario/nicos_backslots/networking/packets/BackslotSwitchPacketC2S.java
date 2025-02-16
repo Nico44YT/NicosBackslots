@@ -1,4 +1,4 @@
-package nazario.backslot.networking.packets;
+package nazario.nicos_backslots.networking.packets;
 
 import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;

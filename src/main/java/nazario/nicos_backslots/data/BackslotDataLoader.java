@@ -1,6 +1,7 @@
-package nazario.backslot.data;
+package nazario.nicos_backslots.data;
 
 import com.google.gson.JsonParser;
+import nazario.nicos_backslots.BackSlotMain;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
@@ -21,7 +22,7 @@ public class BackslotDataLoader implements IdentifiableResourceReloadListener {
 
     @Override
     public Identifier getFabricId() {
-        return new Identifier("backslot", "backslot_data");
+        return new Identifier(BackSlotMain.MOD_ID, "backslot_data");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package nazario.backslot.mixin;
+package nazario.nicos_backslots.mixin;
 
 import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
