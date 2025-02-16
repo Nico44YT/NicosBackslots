@@ -1,0 +1,12 @@
+{
+  "icon": "backslot:gui/backslot",
+  "tooltip_predicates": [
+    "trinkets:none"
+  ],
+  "quick_move_predicates": [
+    "trinkets:none"
+  ],
+  "validator_predicates": [
+    "trinkets:all"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "mode": "first_person_right_hand",
+  "scale": {
+    "x": 1.8,
+    "y": 1.8,
+    "z": 1.8
+  },
+  "offset": {
+    "x": 0,
+    "y": 0.3,
+    "z": 0.1
+  },
+  "rotation": {
+    "x": 0,
+    "y": 90,
+    "z": 0
+  }
+}
