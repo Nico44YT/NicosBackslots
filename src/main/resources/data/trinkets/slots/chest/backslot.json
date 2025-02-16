@@ -1,5 +1,5 @@
 {
-  "icon": "backslot:gui/backslot",
+  "icon": "nicos_backslots:gui/backslot",
   "tooltip_predicates": [
     "trinkets:none"
   ],

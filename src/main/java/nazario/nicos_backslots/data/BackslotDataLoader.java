@@ -48,9 +48,9 @@ public class BackslotDataLoader implements IdentifiableResourceReloadListener {
                             Identifier key = new Identifier(cleanId[0], cleanId[1]);
 
                             preparedData.put(key, BackslotData.fromJson(JsonParser.parseReader(reader)));
-                            System.out.println("Loaded scaling config from " + id);
+                            BackSlotMain.LOGGER.debug("Loaded backslot config from {}", id);
                         } catch (Exception e) {
-                            System.err.println("Error loading scaling config " + id + ": " + e.getMessage());
+                            BackSlotMain.LOGGER.error("Error loading backslot config {}: {}", id, e.getMessage());
                         }
                     });
             return preparedData;
