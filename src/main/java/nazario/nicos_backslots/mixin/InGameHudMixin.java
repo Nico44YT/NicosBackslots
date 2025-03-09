@@ -33,12 +33,10 @@ public abstract class InGameHudMixin {
     @Shadow @Final private static Identifier HOTBAR_OFFHAND_LEFT_TEXTURE;
     @Shadow @Final private static Identifier HOTBAR_OFFHAND_RIGHT_TEXTURE;
 
-    @Inject(method = "renderHotbar", at = @At(value = "TAIL"))
+    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;disableBlend()V"), remap = false)
     public void backslot$renderCustomSlot(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         try{
             context.getMatrices().push();
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
 
             Optional<TrinketComponent> comp = TrinketsApi.getTrinketComponent(MinecraftClient.getInstance().player);
             if(comp.isEmpty()) return;
@@ -74,7 +72,6 @@ public abstract class InGameHudMixin {
             }
 
             context.getMatrices().pop();
-            RenderSystem.disableBlend();
         }catch (Exception e) {
 
         }
