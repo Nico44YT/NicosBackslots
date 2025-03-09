@@ -33,7 +33,7 @@ public abstract class InGameHudMixin {
     @Shadow @Final private static Identifier HOTBAR_OFFHAND_LEFT_TEXTURE;
     @Shadow @Final private static Identifier HOTBAR_OFFHAND_RIGHT_TEXTURE;
 
-    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;disableBlend()V"), remap = false)
+    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;pop()V"))
     public void backslot$renderCustomSlot(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         try{
             context.getMatrices().push();
