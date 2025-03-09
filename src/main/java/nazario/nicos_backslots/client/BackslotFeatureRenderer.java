@@ -43,7 +43,7 @@ public class BackslotFeatureRenderer extends FeatureRenderer<AbstractClientPlaye
                 // Adjust position based on cape and chestplate
                 boolean hasCape = player.isPartVisible(PlayerModelPart.CAPE) && !player.getEquippedStack(EquipmentSlot.CHEST).isOf(Items.ELYTRA);
                 boolean hasChestPlate = !player.getEquippedStack(EquipmentSlot.CHEST).isEmpty();
-                matrices.translate(0.0F, 0.25F, 0.1F + (hasCape ? 0.1F : 0.05F) + (hasChestPlate ? 0.1F : 0.05F));
+                matrices.translate(0.0F, 0.25F, 0.0F + (hasCape ? 0.1F : 0.05F) + (hasChestPlate ? 0.1F : 0.05F));
 
                 // Apply dynamic rotation based on movement
                 float sway = MathHelper.sin(player.age + tickDelta) * 0.1F;
@@ -52,6 +52,10 @@ public class BackslotFeatureRenderer extends FeatureRenderer<AbstractClientPlaye
                 }
                 matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(6.0F + sway));
                 matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
+
+                if(player.isSneaking()) {
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-25));
+                }
 
                 // Scale and render the item
                 BackslotData customData = BackslotDataLoader.DATA.getOrDefault(stack.getItem().liby$getId(), BackslotData.DEFAULT);
