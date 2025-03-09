@@ -7,11 +7,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,18 +25,16 @@ import java.util.Optional;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
-    @Shadow private int scaledHeight;
 
-    @Shadow private int scaledWidth;
+    @Shadow @Nullable protected abstract PlayerEntity getCameraPlayer();
 
-    @Shadow protected abstract PlayerEntity getCameraPlayer();
+    @Shadow protected abstract void renderHotbarItem(DrawContext context, int x, int y, RenderTickCounter tickCounter, PlayerEntity player, ItemStack stack, int seed);
 
-    @Shadow @Final private static Identifier WIDGETS_TEXTURE;
-
-    @Shadow protected abstract void renderHotbarItem(DrawContext context, int x, int y, float f, PlayerEntity player, ItemStack stack, int seed);
+    @Shadow @Final private static Identifier HOTBAR_OFFHAND_LEFT_TEXTURE;
+    @Shadow @Final private static Identifier HOTBAR_OFFHAND_RIGHT_TEXTURE;
 
     @Inject(method = "renderHotbar", at = @At(value = "TAIL"))
-    public void backslot$renderCustomSlot(float tickDelta, DrawContext context, CallbackInfo ci) {
+    public void backslot$renderCustomSlot(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         try{
             context.getMatrices().push();
             RenderSystem.enableBlend();
@@ -47,29 +47,29 @@ public abstract class InGameHudMixin {
 
             PlayerEntity playerEntity = this.getCameraPlayer();
             Arm arm = playerEntity.getMainArm().getOpposite();
-            int i = this.scaledWidth / 2;
+            int i = context.getScaledWindowWidth() / 2;
 
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-            RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
+            //RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
 
             if(itemStack == null) return;
             if(itemStack.getItem() == Items.AIR) return;
 
             if (!itemStack.isEmpty()) {
                 if (arm == Arm.RIGHT) {
-                    context.drawTexture(WIDGETS_TEXTURE, i - 91 - 29, this.scaledHeight - 23, 24, 22, 29, 24);
+                    context.drawGuiTexture(HOTBAR_OFFHAND_LEFT_TEXTURE, i - 91 - 29, context.getScaledWindowHeight() - 23,29, 24);
                 } else {
-                    context.drawTexture(WIDGETS_TEXTURE, i + 91, this.scaledHeight - 23, 53, 22, 29, 24);
+                    context.drawGuiTexture(HOTBAR_OFFHAND_RIGHT_TEXTURE, i + 91, context.getScaledWindowHeight() - 23, 29, 24);
                 }
             }
 
             if (!itemStack.isEmpty()) {
-                int n = this.scaledHeight - 16 - 3;
+                int n = context.getScaledWindowHeight() - 16 - 3;
                 if (arm == Arm.RIGHT) {
-                    this.renderHotbarItem(context,i - 91 - 26, n, tickDelta, playerEntity, itemStack, 0);
+                    this.renderHotbarItem(context,i - 91 - 26, n, tickCounter, playerEntity, itemStack, 0);
                 } else {
-                    this.renderHotbarItem(context, i + 91 + 10, n, tickDelta, playerEntity, itemStack, 0);
+                    this.renderHotbarItem(context, i + 91 + 10, n, tickCounter, playerEntity, itemStack, 0);
                 }
             }
 

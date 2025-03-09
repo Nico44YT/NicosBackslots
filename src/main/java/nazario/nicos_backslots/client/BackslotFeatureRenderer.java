@@ -8,13 +8,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.MathHelper;
@@ -41,8 +41,7 @@ public class BackslotFeatureRenderer extends FeatureRenderer<AbstractClientPlaye
                 matrices.push();
 
                 // Adjust position based on cape and chestplate
-                boolean hasCape = player.canRenderCapeTexture() && player.isPartVisible(PlayerModelPart.CAPE)
-                        && player.getCapeTexture() != null && !player.getEquippedStack(EquipmentSlot.CHEST).isOf(Items.ELYTRA);
+                boolean hasCape = player.isPartVisible(PlayerModelPart.CAPE) && !player.getEquippedStack(EquipmentSlot.CHEST).isOf(Items.ELYTRA);
                 boolean hasChestPlate = !player.getEquippedStack(EquipmentSlot.CHEST).isEmpty();
                 matrices.translate(0.0F, 0.25F, 0.1F + (hasCape ? 0.1F : 0.05F) + (hasChestPlate ? 0.1F : 0.05F));
 

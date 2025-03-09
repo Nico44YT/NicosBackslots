@@ -22,7 +22,7 @@ public class BackslotDataLoader implements IdentifiableResourceReloadListener {
 
     @Override
     public Identifier getFabricId() {
-        return new Identifier(BackSlotMain.MOD_ID, "backslot_data");
+        return Identifier.of(BackSlotMain.MOD_ID, "backslot_data");
     }
 
     @Override
@@ -45,7 +45,7 @@ public class BackslotDataLoader implements IdentifiableResourceReloadListener {
 
                             String[] cleanId = id.getPath().replace("backslot_data/", "").replace(".json","").split("/");
 
-                            Identifier key = new Identifier(cleanId[0], cleanId[1]);
+                            Identifier key = Identifier.of(cleanId[0], cleanId[1]);
 
                             preparedData.put(key, BackslotData.fromJson(JsonParser.parseReader(reader)));
                             BackSlotMain.LOGGER.debug("Loaded backslot config from {}", id);
