@@ -24,7 +24,7 @@ public abstract class PlayerInventoryMixin {
 
         if(comp.isPresent()) {
             ItemStack stack = comp.get().getInventory().get("chest").get("backslot").getStack(0);
-            stack.inventoryTick(this.player.world, this.player, -1, false);
+            stack.inventoryTick(this.player.getWorld(), this.player, -1, false);
         }
     }
 }

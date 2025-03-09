@@ -4,7 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -23,21 +24,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Optional;
 
 @Mixin(InGameHud.class)
-public abstract class InGameHudMixin extends DrawableHelper {
+public abstract class InGameHudMixin {
     @Shadow private int scaledHeight;
 
     @Shadow private int scaledWidth;
-
-    @Shadow protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
 
     @Shadow protected abstract PlayerEntity getCameraPlayer();
 
     @Shadow @Final private static Identifier WIDGETS_TEXTURE;
 
+    @Shadow protected abstract void renderHotbarItem(DrawContext context, int x, int y, float f, PlayerEntity player, ItemStack stack, int seed);
+
     @Inject(method = "renderHotbar", at = @At(value = "TAIL"))
-    public void backslot$renderCustomSlot(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
+    public void backslot$renderCustomSlot(float tickDelta, DrawContext context, CallbackInfo ci) {
         try{
-            matrices.push();
+            context.getMatrices().push();
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
 
@@ -51,7 +52,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
             int i = this.scaledWidth / 2;
 
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
             RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
 
             if(itemStack == null) return;
@@ -59,22 +60,22 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
             if (!itemStack.isEmpty()) {
                 if (arm == Arm.RIGHT) {
-                    this.drawTexture(matrices, i - 91 - 29, this.scaledHeight - 23, 24, 22, 29, 24);
+                    context.drawTexture(WIDGETS_TEXTURE, i - 91 - 29, this.scaledHeight - 23, 24, 22, 29, 24);
                 } else {
-                    this.drawTexture(matrices, i + 91, this.scaledHeight - 23, 53, 22, 29, 24);
+                    context.drawTexture(WIDGETS_TEXTURE, i + 91, this.scaledHeight - 23, 53, 22, 29, 24);
                 }
             }
 
             if (!itemStack.isEmpty()) {
                 int n = this.scaledHeight - 16 - 3;
                 if (arm == Arm.RIGHT) {
-                    this.renderHotbarItem(i - 91 - 26, n, tickDelta, playerEntity, itemStack, 0);
+                    this.renderHotbarItem(context,i - 91 - 26, n, tickDelta, playerEntity, itemStack, 0);
                 } else {
-                    this.renderHotbarItem(i + 91 + 10, n, tickDelta, playerEntity, itemStack, 0);
+                    this.renderHotbarItem(context, i + 91 + 10, n, tickDelta, playerEntity, itemStack, 0);
                 }
             }
 
-            matrices.pop();
+            context.getMatrices().pop();
             RenderSystem.disableBlend();
         }catch (Exception e) {
 

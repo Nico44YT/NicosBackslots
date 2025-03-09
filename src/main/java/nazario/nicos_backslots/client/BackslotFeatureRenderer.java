@@ -12,13 +12,13 @@ import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 
 import java.util.Optional;
 
@@ -51,30 +51,30 @@ public class BackslotFeatureRenderer extends FeatureRenderer<AbstractClientPlaye
                 if (player.isInSneakingPose()) {
                     sway += 0.25F;
                 }
-                matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(6.0F + sway));
-                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(6.0F + sway));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
 
                 // Scale and render the item
                 BackslotData customData = BackslotDataLoader.DATA.getOrDefault(stack.getItem().liby$getId(), BackslotData.DEFAULT);
 
                 matrices.translate(customData.offset.getX(), -customData.offset.getY(), customData.offset.getZ());
-                matrices.scale(0.85F * customData.scale.getX(), 0.85F * customData.scale.getY(), 0.85F * customData.scale.getZ());
+                matrices.scale(0.85F * (float)customData.scale.getX(), 0.85F * (float)customData.scale.getY(), 0.85F * (float)customData.scale.getZ());
 
-                matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(customData.rotation.getX()));
-                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(customData.rotation.getY()));
-                matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(customData.rotation.getZ()));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees((float)customData.rotation.getX()));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float)customData.rotation.getY()));
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float)customData.rotation.getZ()));
 
-                ModelTransformation.Mode mode = switch(customData.mode.toLowerCase()) {
-                    case "none" -> ModelTransformation.Mode.NONE;
-                    case "third_person_left_hand" -> ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND;
-                    case "third_person_right_hand" -> ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND;
-                    case "first_person_left_hand" -> ModelTransformation.Mode.FIRST_PERSON_LEFT_HAND;
-                    case "first_person_right_hand" -> ModelTransformation.Mode.FIRST_PERSON_RIGHT_HAND;
-                    case "head" -> ModelTransformation.Mode.HEAD;
-                    case "gui" -> ModelTransformation.Mode.GUI;
-                    case "ground" -> ModelTransformation.Mode.GROUND;
-                    case "fixed" -> ModelTransformation.Mode.FIXED;
-                    default -> ModelTransformation.Mode.FIXED;
+                ModelTransformationMode mode = switch(customData.mode.toLowerCase()) {
+                    case "none" -> ModelTransformationMode.NONE;
+                    case "third_person_left_hand" -> ModelTransformationMode.THIRD_PERSON_LEFT_HAND;
+                    case "third_person_right_hand" -> ModelTransformationMode.THIRD_PERSON_RIGHT_HAND;
+                    case "first_person_left_hand" -> ModelTransformationMode.FIRST_PERSON_LEFT_HAND;
+                    case "first_person_right_hand" -> ModelTransformationMode.FIRST_PERSON_RIGHT_HAND;
+                    case "head" -> ModelTransformationMode.HEAD;
+                    case "gui" -> ModelTransformationMode.GUI;
+                    case "ground" -> ModelTransformationMode.GROUND;
+                    case "fixed" -> ModelTransformationMode.FIXED;
+                    default -> ModelTransformationMode.FIXED;
                 };
 
                 MinecraftClient.getInstance().getItemRenderer().renderItem(player, stack, mode, false, matrices, vertexConsumers, player.getWorld(), light, OverlayTexture.DEFAULT_UV, 0);
