@@ -3,7 +3,6 @@ package nazario.nicos_backslots.data;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3d;
 
 public class BackslotData {
     public static final BackslotData DEFAULT = new BackslotData(new Vec3d(1, 1, 1), Vec3d.ZERO, Vec3d.ZERO, "fixed");

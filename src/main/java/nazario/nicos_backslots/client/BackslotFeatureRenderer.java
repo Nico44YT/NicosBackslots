@@ -55,7 +55,7 @@ public class BackslotFeatureRenderer extends FeatureRenderer<AbstractClientPlaye
                 matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
 
                 // Scale and render the item
-                BackslotData customData = BackslotDataLoader.DATA.getOrDefault(stack.getItem().liby$getId(), BackslotData.DEFAULT);
+                BackslotData customData = BackslotDataLoader.DATA.getOrDefault(stack.getItem().getRegistryEntry().getKey().get().getValue(), BackslotData.DEFAULT);
 
                 matrices.translate(customData.offset.getX(), -customData.offset.getY(), customData.offset.getZ());
                 matrices.scale(0.85F * (float)customData.scale.getX(), 0.85F * (float)customData.scale.getY(), 0.85F * (float)customData.scale.getZ());

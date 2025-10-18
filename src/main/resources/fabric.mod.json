@@ -27,7 +27,6 @@
   ],
   "depends": {
     "fabric": "*",
-    "liby": ">=1.20.1-build-2.0",
     "trinkets": ">=${trinkets_version}",
     "minecraft": "${minecraft_version}"
   },

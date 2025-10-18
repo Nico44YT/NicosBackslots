@@ -1,6 +1,6 @@
 package nazario.nicos_backslots;
 
-import nazario.liby.api.registry.auto.LibyRegistryLoader;
+import nazario.nicos_backslots.networking.BackSlotPackets;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +12,6 @@ public class BackSlotMain implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        LibyRegistryLoader.load("nazario.nicos_backslots");
+        BackSlotPackets.registerC2SPackets();
     }
 }
