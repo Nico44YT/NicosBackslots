@@ -64,9 +64,6 @@ dependencies {
     modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}")
     modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.cca_version}")
     modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-block:${project.cca_version}")
-
-    modImplementation(files("./libs/liby-1.19.2-build-2.1.jar"))
-    implementation "org.reflections:reflections:0.10.2"
 }
 
 processResources {
