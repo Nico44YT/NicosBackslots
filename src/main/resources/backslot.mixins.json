@@ -7,8 +7,9 @@
     "PlayerInventoryMixin"
   ],
   "client": [
-    "InGameHudMixin",
-    "PlayerEntityRendererMixin"
+    "client.ClickableWidgetMixin",
+    "client.InGameHudMixin",
+    "client.PlayerEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

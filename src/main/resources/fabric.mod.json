@@ -13,13 +13,17 @@
   },
   "license": "GPL-3.0",
   "icon": "assets/nicos_backslots/backslot_icon.png",
+  "accessWidener": "nicos_backslot.accesswidener",
   "environment": "*",
   "entrypoints": {
     "client": [
-      "nazario.nicos_backslots.BackSlotClient"
+      "nazario.nicos_backslots.client.BackSlotClient"
     ],
     "main": [
       "nazario.nicos_backslots.BackSlotMain"
+    ],
+    "modmenu": [
+      "nazario.nicos_backslots.client.config.BackSlotModMenuIntegration"
     ]
   },
   "mixins": [

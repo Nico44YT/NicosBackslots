@@ -1,4 +1,4 @@
-package nazario.nicos_backslots.client;
+package nazario.nicos_backslots.client.renderer;
 
 import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
@@ -17,7 +17,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
 import java.util.Optional;
@@ -39,23 +38,12 @@ public class BackslotFeatureRenderer extends FeatureRenderer<AbstractClientPlaye
                 if(stack == null) stack = ItemStack.EMPTY;
 
                 matrices.push();
+                getContextModel().body.rotate(matrices);
 
                 // Adjust position based on cape and chestplate
                 boolean hasCape = player.isPartVisible(PlayerModelPart.CAPE) && !player.getEquippedStack(EquipmentSlot.CHEST).isOf(Items.ELYTRA);
                 boolean hasChestPlate = !player.getEquippedStack(EquipmentSlot.CHEST).isEmpty();
                 matrices.translate(0.0F, 0.25F, 0.0F + (hasCape ? 0.1F : 0.05F) + (hasChestPlate ? 0.1F : 0.05F));
-
-                // Apply dynamic rotation based on movement
-                float sway = MathHelper.sin(player.age + tickDelta) * 0.1F;
-                if (player.isInSneakingPose()) {
-                    sway += 0.25F;
-                }
-                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(6.0F + sway));
-                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
-
-                if(player.isSneaking()) {
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-25));
-                }
 
                 // Scale and render the item
                 BackslotData customData = BackslotDataLoader.DATA.getOrDefault(stack.getItem().getRegistryEntry().getKey().get().getValue(), BackslotData.DEFAULT);

@@ -1,6 +1,6 @@
-package nazario.nicos_backslots.mixin;
+package nazario.nicos_backslots.mixin.client;
 
-import nazario.nicos_backslots.client.BackslotFeatureRenderer;
+import nazario.nicos_backslots.client.renderer.BackslotFeatureRenderer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;

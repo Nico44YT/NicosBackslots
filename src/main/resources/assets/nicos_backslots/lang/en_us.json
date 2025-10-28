@@ -1,3 +1,4 @@
 {
-  "key.nicos_backslots.swap": "Swap Item With Backslot"
+  "key.nicos_backslots.swap": "Swap Item With Backslot",
+  "config.nicos_backslots.title": "Nicos Backslots"
 }
