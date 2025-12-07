@@ -2,6 +2,7 @@ package nazario.nicos_backslots.client;
 
 import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
+import nazario.nicos_backslots.api.BackslotItemOverride;
 import nazario.nicos_backslots.data.BackslotData;
 import nazario.nicos_backslots.data.BackslotDataLoader;
 import net.minecraft.client.MinecraftClient;
@@ -12,13 +13,22 @@ import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.math.MathHelper;
+
+//? <1.19.3 {
 import net.minecraft.util.math.Vec3f;
+//?} else {
+/*import net.minecraft.util.math.RotationAxis;
+*///?}
+
+//? >=1.19.4 {
+/*import net.minecraft.client.render.model.json.ModelTransformationMode;
+*///?} else {
+import net.minecraft.client.render.model.json.ModelTransformation;
+//?}
 
 import java.util.Optional;
 
@@ -28,15 +38,25 @@ public class BackslotFeatureRenderer extends FeatureRenderer<AbstractClientPlaye
         super(context);
     }
 
+    private BackslotData cachedData;
+    private int hash = 0;
+
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity player, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-        Optional<TrinketComponent> comp = TrinketsApi.getTrinketComponent(player);
+        Optional<TrinketComponent> optional = TrinketsApi.getTrinketComponent(player);
 
-        if(comp.isPresent()) {
+        if(optional.isPresent()) {
+            TrinketComponent component = optional.get();
+
             try{
-                ItemStack stack = comp.get().getInventory().get("chest").get("backslot").getStack(0);
+                ItemStack stack = component.getInventory().get("chest").get("backslot").getStack(0);
 
                 if(stack == null) stack = ItemStack.EMPTY;
+
+                if(hash != stack.hashCode()) {
+                    hash = stack.hashCode();
+                    cachedData = null;
+                }
 
                 matrices.push();
 
@@ -44,43 +64,54 @@ public class BackslotFeatureRenderer extends FeatureRenderer<AbstractClientPlaye
                 boolean hasCape = player.canRenderCapeTexture() && player.isPartVisible(PlayerModelPart.CAPE)
                         && player.getCapeTexture() != null && !player.getEquippedStack(EquipmentSlot.CHEST).isOf(Items.ELYTRA);
                 boolean hasChestPlate = !player.getEquippedStack(EquipmentSlot.CHEST).isEmpty();
-                matrices.translate(0.0F, 0.25F, 0.1F + (hasCape ? 0.1F : 0.05F) + (hasChestPlate ? 0.1F : 0.05F));
+                matrices.translate(0.0F, 0.25F, 0.1F + (hasCape ? 0.1F : 0.04F) + (hasChestPlate ? 0.1F : 0.04F));
 
-                // Apply dynamic rotation based on movement
-                float sway = MathHelper.sin(player.age + tickDelta) * 0.1F;
+                float angleOffset = 0;
                 if (player.isInSneakingPose()) {
-                    sway += 0.25F;
+                    angleOffset += 25F;
                 }
-                matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(6.0F + sway));
+
+                //? <1.19.3 {
+                matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(6.0F + angleOffset));
                 matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F));
+                //?} else {
+                /*matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(6.0F + angleOffset));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
+                *///?}
 
                 // Scale and render the item
-                BackslotData customData = BackslotDataLoader.DATA.getOrDefault(stack.getItem().getRegistryEntry().getKey().get().getValue(), BackslotData.DEFAULT);
+                if(cachedData == null) {
+                    cachedData = BackslotDataLoader.DATA.getOrDefault(stack.getItem().getRegistryEntry().getKey().get().getValue(), BackslotData.DEFAULT).copy();
+                }
 
-                matrices.translate(customData.offset.getX(), -customData.offset.getY(), customData.offset.getZ());
-                matrices.scale(0.85F * customData.scale.getX(), 0.85F * customData.scale.getY(), 0.85F * customData.scale.getZ());
+                if(stack.getItem() instanceof BackslotItemOverride overrider) cachedData = overrider.overrideBackslotRendering(cachedData, stack);
 
-                matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(customData.rotation.getX()));
-                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(customData.rotation.getY()));
-                matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(customData.rotation.getZ()));
+                matrices.translate((float)cachedData.offset.x, (float)-cachedData.offset.y, (float)cachedData.offset.z);
+                matrices.scale(0.85F * (float)cachedData.scale.x, 0.85F * (float)cachedData.scale.y, 0.85F * (float)cachedData.scale.z);
 
-                ModelTransformation.Mode mode = switch(customData.mode.toLowerCase()) {
-                    case "none" -> ModelTransformation.Mode.NONE;
-                    case "third_person_left_hand" -> ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND;
-                    case "third_person_right_hand" -> ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND;
-                    case "first_person_left_hand" -> ModelTransformation.Mode.FIRST_PERSON_LEFT_HAND;
-                    case "first_person_right_hand" -> ModelTransformation.Mode.FIRST_PERSON_RIGHT_HAND;
-                    case "head" -> ModelTransformation.Mode.HEAD;
-                    case "gui" -> ModelTransformation.Mode.GUI;
-                    case "ground" -> ModelTransformation.Mode.GROUND;
-                    case "fixed" -> ModelTransformation.Mode.FIXED;
-                    default -> ModelTransformation.Mode.FIXED;
-                };
+                //? <1.19.3 {
+                matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion((float)cachedData.rotation.x));
+                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion((float)cachedData.rotation.y));
+                matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float)cachedData.rotation.z));
+                //?} else {
+                /*matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees((float)cachedData.rotation.x));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float)cachedData.rotation.y));
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float)cachedData.rotation.z));
+                *///?}
+
+                //? >=1.19.4 {
+                //ModelTransformationMode mode = ModelTransformationMode.valueOf(cachedData.mode.toUpperCase());
+                //?} else {
+                ModelTransformation.Mode mode = ModelTransformation.Mode.valueOf(cachedData.mode.toUpperCase());
+                //?}
+
+
 
                 MinecraftClient.getInstance().getItemRenderer().renderItem(player, stack, mode, false, matrices, vertexConsumers, player.getWorld(), light, OverlayTexture.DEFAULT_UV, 0);
 
                 matrices.pop();
-            }catch (Exception e) {
+            } catch (Exception e) {
+                cachedData = null;
             }
         }
     }

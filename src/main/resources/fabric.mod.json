@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "nazario.nicos_backslots.BackSlotClient"
+      "nazario.nicos_backslots.client.BackSlotClient"
     ],
     "main": [
       "nazario.nicos_backslots.BackSlotMain"
@@ -28,7 +28,7 @@
   "depends": {
     "fabric": "*",
     "trinkets": ">=${trinkets_version}",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "~${minecraft_version}"
   },
   "custom": {
     "modmenu": {

@@ -1,4 +1,4 @@
-package nazario.nicos_backslots;
+package nazario.nicos_backslots.client;
 
 import nazario.nicos_backslots.data.BackslotDataLoader;
 import nazario.nicos_backslots.networking.BackSlotPackets;

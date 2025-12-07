@@ -62,8 +62,6 @@ dependencies {
 
     modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}")
     modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}")
-    modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.cca_version}")
-    modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-block:${project.cca_version}")
 }
 
 processResources {
@@ -125,5 +123,26 @@ publishing {
         // Notice: This block does NOT have the same function as the block in the top level.
         // The repositories here will be used for publishing your artifact, not for
         // retrieving dependencies.
+    }
+}
+
+tasks.register("collect-jars") {
+    group = "build"
+    description = "Moves this version's built jar into the root build/libs folder."
+
+    doLast {
+        def jarDir = file("$buildDir/libs")
+        def rootLibs = rootProject.layout.buildDirectory.dir("collected-jars").get().asFile
+        rootLibs.mkdirs()
+
+        jarDir.listFiles()?.each { file ->
+            if (file.name.endsWith(".jar")) {
+                copy {
+                    from file
+                    into rootLibs
+                    rename { file.name } // keep name as-is
+                }
+            }
+        }
     }
 }

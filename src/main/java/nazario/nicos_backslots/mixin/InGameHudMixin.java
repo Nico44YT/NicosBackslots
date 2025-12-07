@@ -6,7 +6,6 @@ import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -28,11 +27,17 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Shadow private int scaledWidth;
 
+    //? >=1.19.4 {
+    /*@Shadow protected abstract void renderHotbarItem(MatrixStack matrix, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
+    *///?} else {
     @Shadow protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
+    //?}
+
 
     @Shadow protected abstract PlayerEntity getCameraPlayer();
 
     @Shadow @Final private static Identifier WIDGETS_TEXTURE;
+
 
     @Inject(method = "renderHotbar", at = @At(value = "TAIL"))
     public void backslot$renderCustomSlot(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
@@ -51,7 +56,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
             int i = this.scaledWidth / 2;
 
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            //RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
 
             if(itemStack == null) return;
@@ -68,9 +73,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
             if (!itemStack.isEmpty()) {
                 int n = this.scaledHeight - 16 - 3;
                 if (arm == Arm.RIGHT) {
-                    this.renderHotbarItem(i - 91 - 26, n, tickDelta, playerEntity, itemStack, 0);
+                    this.backslot$renderHotbarItem(matrices, i - 91 - 26, n, tickDelta, playerEntity, itemStack, 0);
                 } else {
-                    this.renderHotbarItem(i + 91 + 10, n, tickDelta, playerEntity, itemStack, 0);
+                    this.backslot$renderHotbarItem(matrices, i + 91 + 10, n, tickDelta, playerEntity, itemStack, 0);
                 }
             }
 
@@ -79,5 +84,13 @@ public abstract class InGameHudMixin extends DrawableHelper {
         }catch (Exception e) {
 
         }
+    }
+
+    private void backslot$renderHotbarItem(MatrixStack matrixStack, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed) {
+        //? >=1.19.4 {
+        /*this.renderHotbarItem(matrixStack, x, y, tickDelta, player, stack, seed);
+        *///?} else {
+        this.renderHotbarItem(x, y, tickDelta, player, stack, seed);
+        //?}
     }
 }
